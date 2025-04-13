@@ -25,7 +25,7 @@ const restOfMessage = [
   "🎈 Fir bhi mein tu bankaar, tujhe woh saab na de paau jo tune mujhe diya aabhi,",
   "",
   "🎉 Happy Birthday Tiger! 🎉",
-  "🌟 May god Bless you!",
+  "🌟 God Bless you!",
   "👑 And always be the queen of your choices!",
   "",
   "r last a r ekta line likhechi, sune ja chup chaap",
@@ -76,7 +76,7 @@ function BirthdayPage() {
 
       <div className="hearts" />
       <div style={styles.card}>
-        <h1 style={styles.title}>🎂 Happy Birthday, Queen! 🎂</h1>
+        <h1 style={styles.title}>🎂 Happy Birthday, Bhai! 🎂</h1>
 
         {firstPart.slice(0, lineIndex).map((line, idx) => (
           <p key={idx} style={styles.line}>{line}</p>
@@ -88,25 +88,43 @@ function BirthdayPage() {
           </button>
         )}
 
-        {showRest &&
-          restOfMessage.slice(0, -6).map((line, index) => (
-            <p key={index} style={styles.line}>{line}</p>
-          ))}
+{showRest &&
+  restOfMessage.slice(0, -6).map((line, index) => (
+    <p
+      key={index}
+      style={{
+        ...styles.line,
+        marginTop: line === "" ? "50px" : styles.line.margin,
+      }}
+    >
+      {line}
+    </p>
+  ))}
+
 
         {/* Final dramatic reveal */}
         {showRest && (
-          <div style={styles.finalReveal}>
-            {restOfMessage.slice(-6).map((line, idx) => (
-              <p key={idx} style={styles.line}>{line}</p>
-            ))}
+  <div style={styles.finalReveal}>
+    {restOfMessage.slice(-6).map((line, idx) => (
+      <p
+        key={idx}
+        style={{
+          ...styles.line,
+          marginTop: line === "" ? "50px" : styles.line.margin,
+        }}
+      >
+        {line}
+      </p>
+    ))}
 
-            <a href="https://ashmitabanerjee.netlify.app/" target="_blank" rel="noopener noreferrer">
-              <button style={styles.queenButton}>
-                👑 Meet the Queen 👑
-              </button>
-            </a>
-          </div>
-        )}
+    <a href="https://ashmitabanerjee.netlify.app/" target="_blank" rel="noopener noreferrer">
+      <button style={styles.queenButton}>
+        👑 Meet the Queen 👑
+      </button>
+    </a>
+  </div>
+)}
+
       </div>
       <style>{floatingHeartsCSS}</style>
     </div>
