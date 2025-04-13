@@ -45,6 +45,7 @@ const restOfMessage = [
 function BirthdayPage() {
   const [lineIndex, setLineIndex] = useState(0);
   const [showRest, setShowRest] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     if (lineIndex < firstPart.length) {
@@ -55,7 +56,6 @@ function BirthdayPage() {
     }
   }, [lineIndex]);
 
-  // 🌠 Falling Star randomizer
   useEffect(() => {
     const stars = document.querySelectorAll(".star");
     stars.forEach((star) => {
@@ -66,10 +66,17 @@ function BirthdayPage() {
     });
   }, []);
 
+  const handleMeetQueen = () => {
+    setShowPopup(true);
+    setTimeout(() => {
+      window.location.href = "https://ashmitabanerjee.netlify.app/";
+    }, 2000);
+  };
+
   return (
     <div style={styles.container}>
       <div className="stars-container">
-        {[...Array(500)].map((_, i) => (  // Increased number of stars for better coverage
+        {[...Array(500)].map((_, i) => (
           <div key={i} className="star" />
         ))}
       </div>
@@ -88,44 +95,48 @@ function BirthdayPage() {
           </button>
         )}
 
-{showRest &&
-  restOfMessage.slice(0, -6).map((line, index) => (
-    <p
-      key={index}
-      style={{
-        ...styles.line,
-        marginTop: line === "" ? "50px" : styles.line.margin,
-      }}
-    >
-      {line}
-    </p>
-  ))}
+        {showRest &&
+          restOfMessage.slice(0, -6).map((line, index) => (
+            <p
+              key={index}
+              style={{
+                ...styles.line,
+                marginTop: line === "" ? "50px" : styles.line.margin,
+              }}
+            >
+              {line}
+            </p>
+          ))}
 
-
-        {/* Final dramatic reveal */}
         {showRest && (
-  <div style={styles.finalReveal}>
-    {restOfMessage.slice(-6).map((line, idx) => (
-      <p
-        key={idx}
-        style={{
-          ...styles.line,
-          marginTop: line === "" ? "50px" : styles.line.margin,
-        }}
-      >
-        {line}
-      </p>
-    ))}
+          <div style={styles.finalReveal}>
+            {restOfMessage.slice(-6).map((line, idx) => (
+              <p
+                key={idx}
+                style={{
+                  ...styles.line,
+                  marginTop: line === "" ? "50px" : styles.line.margin,
+                }}
+              >
+                {line}
+              </p>
+            ))}
 
-    <a href="https://ashmitabanerjee.netlify.app/" target="_blank" rel="noopener noreferrer">
-      <button style={styles.queenButton}>
-        👑 Meet the Queen 👑
-      </button>
-    </a>
-  </div>
-)}
-
+            <button style={styles.queenButton} onClick={handleMeetQueen}>
+              Meet the Queen 👑
+            </button>
+          </div>
+        )}
       </div>
+
+      {showPopup && (
+        <div style={styles.popupOverlay}>
+          <div style={styles.popupBox}>
+            <h2 style={styles.popupText}>SMILE PLEASE! 😊</h2>
+          </div>
+        </div>
+      )}
+
       <style>{floatingHeartsCSS}</style>
     </div>
   );
@@ -198,12 +209,36 @@ const styles = {
     boxShadow: "0 4px 15px rgba(255, 255, 255, 0.2)",
   },
   finalReveal: {
-    marginTop: "200vh", // Makes it appear far down
+    marginTop: "200vh",
     textAlign: "center",
+  },
+  popupOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0,0,0,0.7)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 9999,
+  },
+  popupBox: {
+    background: "white",
+    padding: "40px 60px",
+    borderRadius: "20px",
+    textAlign: "center",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+  },
+  popupText: {
+    fontSize: "2rem",
+    fontWeight: "bold",
+    color: "#ff4081",
+    fontFamily: "'Dancing Script', cursive",
   },
 };
 
-// 💖 Hearts + 🌠 Stars CSS
 const floatingHeartsCSS = `
 @keyframes pulse {
   0% { transform: scale(1); }
@@ -254,14 +289,14 @@ const floatingHeartsCSS = `
 
 @keyframes starFall {
   0% {
-    transform: translateX(100vw) translateY(-100px) rotate(250deg); /* Start from top-right */
+    transform: translateX(100vw) translateY(-100px) rotate(250deg);
     opacity: 0;
   }
   10% {
     opacity: 1;
   }
   100% {
-    transform: translateX(-100vw) translateY(100vh) rotate(250deg); /* Move to bottom-left */
+    transform: translateX(-100vw) translateY(100vh) rotate(250deg);
     opacity: 0;
   }
 }
@@ -273,4 +308,3 @@ const floatingHeartsCSS = `
   animation-delay: calc(-5s * var(--rand-delay));
 }
 `;
-
