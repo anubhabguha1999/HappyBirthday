@@ -1,0 +1,65 @@
+/* Contact.module.css */
+
+@import "../../vars.css";
+
+.container {
+  color: var(--color-text);
+  margin-top: 120px;
+  background-color: #000000;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100vw;
+  padding: 58px 10%;
+  gap: 10px;
+}
+
+.text h2, .text p, .link {
+  opacity: 0; /* Initial state for transition */
+  transform: translateY(20px); /* Initial position for transition */
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.inView .text h2, .inView .text p, .inView .link {
+  opacity: 1; /* Final state for transition */
+  transform: translateY(0); /* Final position for transition */
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  list-style: none;
+  gap: 26px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.link a {
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+}
+
+@media screen and (max-width: 830px) {
+  .container {
+    flex-direction: column;
+    gap: 23px;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .links {
+    align-items: start;
+  }
+}

@@ -1,0 +1,201 @@
+@import "../../vars.css";
+
+.qualificationsContainer {
+  position: relative;
+  padding: 40px;
+  background: linear-gradient(to bottom, #04152d, #000000);
+  color: #ffffff;
+  text-align: center;
+  overflow: hidden;
+  animation: backgroundShift 30s ease-in-out infinite;
+}
+
+/* Title Animation */
+.title {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #74a5d7;
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+  animation: titleGlow 2s ease-in-out infinite alternate;
+  position: relative;
+  z-index: 10;
+}
+
+/* Raindrop Effect */
+.qualificationsContainer::before,
+.qualificationsContainer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.qualificationsContainer::before {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.018) 20%, transparent 25%);
+  background-size: 400px 400px;
+  animation: raindropAnimation 8s linear infinite;
+  transform: rotate(0deg);
+}
+
+.qualificationsContainer::after {
+  background: radial-gradient(circle, rgba(77, 77, 77, 0.2) 10%, transparent 15%);
+  background-size: 800px 800px;
+  animation: raindropAnimation 10s linear infinite;
+  opacity: 0.4;
+  transform: rotate(0deg);
+}
+
+/* Keyframes */
+@keyframes backgroundShift {
+  0% {
+    background: linear-gradient(to bottom, #000000, #04152d);
+  }
+  50% {
+    background: linear-gradient(to bottom, #000000, #04152d);
+  }
+  100% {
+    background: linear-gradient(to bottom, #000000, #04152d);
+  }
+}
+
+@keyframes titleGlow {
+  0% {
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  100% {
+    text-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+  }
+}
+
+@keyframes raindropAnimation {
+  0% {
+    transform: translateY(-100%) translateX(100%);
+  }
+  100% {
+    transform: translateY(100%) translateX(-100%);
+  }
+}
+
+.educationItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+  backdrop-filter: blur(15px);
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  animation: slideUp 1.5s ease-out forwards;
+  height: fit-content;
+  min-height: 300px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 10;
+}
+
+.educationItem:hover {
+  transform: translateY(-15px) scale(1.07);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.2));
+}
+
+.educationDetails {
+  flex: 1;
+  text-align: left;
+  animation: fadeInText 1.5s ease-in-out;
+  z-index: 10;
+  gap: 20px;
+  height: fit-content;
+}
+
+.educationIcon {
+  flex: 0 0 100px;
+  animation: iconSpin 5s linear infinite;
+  z-index: 10;
+}
+
+.icon {
+  width: 80px;
+  height: 80px;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.icon:hover {
+  transform: rotateY(360deg);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Keyframes for Advanced Animations */
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInText {
+  0% {
+    color: transparent;
+    transform: translateX(-20px);
+  }
+  100% {
+    color: #ffffff;
+    transform: translateX(0);
+  }
+}
+
+@keyframes iconSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.educationDetails h1 {
+  margin-bottom: 30px;
+  animation: textHighlight 2s ease-in-out infinite alternate;
+}
+
+.educationDetails p {
+  margin-bottom: 12px;
+}
+
+/* Additional Keyframes */
+@keyframes textHighlight {
+  0% {
+    color: #ffffff;
+  }
+  50% {
+    color: #74a5d7;
+  }
+  100% {
+    color: #ffffff;
+  }
+}
+
+/* Optional: Customize the cursor */
+.typingHeading .cursor {
+  animation: blink-caret 0.7s step-end infinite;
+}
+
+/* Blinking caret animation */
+@keyframes blink-caret {
+  from, to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: black;
+  }
+}

@@ -1,0 +1,108 @@
+@import "../../vars.css";
+
+.container {
+  margin-top: 76px;
+  color: var(--color-text);
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #04152d 0%, #26618B 100%);
+  padding: 15px;
+  border: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.title {
+  font-size: 35px;
+  font-weight: 700;
+  letter-spacing: 1.75px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.toggleButton {
+  background: linear-gradient(135deg, #26618B, #04152d);
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-left: 20px;
+  border-radius: 5px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.toggleButton:hover {
+  background: linear-gradient(135deg, #04152d, #26618B);
+  color: #A3D7FD;
+}
+
+.projectsWrapper {
+  overflow: hidden;
+  transition: height 1s ease;
+  padding: 20px;
+  border: 2px solid #04152d;
+  border: 10px;
+  box-shadow: 0 6px 12px rgba(64, 4, 230, 0.3);
+  background: linear-gradient(180deg, rgba(25, 0, 101, 0.649), rgba(88, 54, 0, 0.519));
+  background-size: 200% 200%;
+  animation: gradientShift 5s linear infinite;
+}
+
+.projects {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.show .projects > * {
+  animation: fadeInSlideUpWithDelay 0.8s forwards;
+  animation-delay: calc(var(--project-index) * 0.1s); /* Staggered delay */
+}
+
+.hide .projects > * {
+  animation: fadeOutSlideDownWithDelay 0.8s forwards;
+  animation-delay: calc(var(--project-index) * 0.1s); /* Staggered delay */
+}
+
+@keyframes fadeInSlideUpWithDelay {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutSlideDownWithDelay {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
