@@ -235,7 +235,6 @@ const styles = {
     fontSize: "2rem",
     fontWeight: "bold",
     color: "#ff4081",
-    fontFamily: "'Dancing Script', cursive",
   },
 };
 
