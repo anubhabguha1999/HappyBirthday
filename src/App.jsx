@@ -50,15 +50,26 @@ function BirthdayPage() {
     if (lineIndex < firstPart.length) {
       const timeout = setTimeout(() => {
         setLineIndex((prev) => prev + 1);
-      }, 1600);
+      }, 500);
       return () => clearTimeout(timeout);
     }
   }, [lineIndex]);
 
+  // 🌠 Falling Star randomizer
+  useEffect(() => {
+    const stars = document.querySelectorAll(".star");
+    stars.forEach((star) => {
+      star.style.setProperty("--rand-x", Math.random().toString());
+      star.style.setProperty("--rand-y", Math.random().toString());
+      star.style.setProperty("--rand-speed", Math.random().toString());
+      star.style.setProperty("--rand-delay", Math.random().toString());
+    });
+  }, []);
+
   return (
     <div style={styles.container}>
       <div className="stars-container">
-        {[...Array(300)].map((_, i) => (
+        {[...Array(500)].map((_, i) => (  // Increased number of stars for better coverage
           <div key={i} className="star" />
         ))}
       </div>
@@ -110,7 +121,7 @@ export default function App() {
   );
 }
 
-// --- Dark Mode Styles ---
+// 🎨 Styles
 const styles = {
   container: {
     background: "linear-gradient(to bottom right, #0f0c29, #302b63, #24243e)",
@@ -174,9 +185,8 @@ const styles = {
   },
 };
 
-// --- Floating Heart Animation CSS ---
+// 💖 Hearts + 🌠 Stars CSS
 const floatingHeartsCSS = `
-/* existing animations... */
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
@@ -185,7 +195,6 @@ const floatingHeartsCSS = `
 
 .hearts::before,
 .hearts::after {
-  content: "💖 💕 💗 💞 💘 💝";
   font-size: 2rem;
   position: absolute;
   top: -5%;
@@ -205,7 +214,6 @@ const floatingHeartsCSS = `
   }
 }
 
-/* 🌠 Falling Stars 🌠 */
 .stars-container {
   position: absolute;
   top: 0;
@@ -218,42 +226,33 @@ const floatingHeartsCSS = `
 
 .star {
   position: absolute;
-  width: 2px;
-  height: 60px;
-  background: linear-gradient(white, rgba(255, 255, 255, 0));
+  width: 1px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
   animation: starFall linear infinite;
   opacity: 0.6;
 }
 
 @keyframes starFall {
   0% {
-    transform: translateY(-100px) translateX(0) rotate(45deg);
+    transform: translateX(100vw) translateY(-100px) rotate(250deg); /* Start from top-right */
     opacity: 0;
   }
   10% {
     opacity: 1;
   }
   100% {
-    transform: translateY(110vh) translateX(-100px) rotate(45deg);
+    transform: translateX(-100vw) translateY(100vh) rotate(250deg); /* Move to bottom-left */
     opacity: 0;
   }
 }
 
-/* Randomize stars with JS-like styling */
 .stars-container .star {
   left: calc(100% * var(--rand-x));
-  animation-duration: calc(2s + 3s * var(--rand-speed));
+  top: calc(100vh * var(--rand-y));
+  animation-duration: calc(3s + 4s * var(--rand-speed));
   animation-delay: calc(-5s * var(--rand-delay));
 }
-
-/* Generate random custom properties for each star using JS */
 `;
 
-document.addEventListener("DOMContentLoaded", () => {
-  const stars = document.querySelectorAll(".star");
-  stars.forEach((star) => {
-    star.style.setProperty("--rand-x", Math.random());
-    star.style.setProperty("--rand-speed", Math.random());
-    star.style.setProperty("--rand-delay", Math.random());
-  });
-});
