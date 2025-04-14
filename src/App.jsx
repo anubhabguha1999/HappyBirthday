@@ -1,60 +1,50 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-
-const firstPart = [
-  "Finally the day came!",
-  "Eisob natok amar dara hobe na!",
-  "",
-  "Bhaai kaa birthday hein,",
-  "Bhaai khusss rehena aur khubb uchaiyaa choona,",
-  "",
-  "Now stop, take a deep breath and start reading again,",
-  "I don’t want you to read it fast, karon tui eta jhor er begh a porchis, just go slow on the lines,",
-];
-
-const restOfMessage = [
-  "",
-  "",
-  "💫 Kuch line-o mein tujhe, tujhko samjhana tha,",
-  "💫 Tu hein kaun aaj wohi baatana tha,",
-  "",
-  "🌸 Iss umaar mein hoh nehi payega per, ek dusre janam mei kahi,",
-  "🌸 Mein aaunga tere paas, per “mein wohi hoon!” yeh bataunga mein nehi,",
-  "",
-  "🎈 Mein fir seh tera dost banunga, bin-bole ki “mein tera dost tha kabhi”",
-  "🎈 Fir bhi mein tu bankaar, tujhe woh saab na de paau jo tune mujhe diya aabhi,",
-  "",
-  "🎉 Happy Birthday Tiger! 🎉",
-  "🌟 God Bless you!",
-  "👑 And always be the queen of your choices!",
-  "",
-  "r last a r ekta line likhechi, sune ja chup chaap",
-  "",
-  "buss dhiyaan rakhna itni si baath pe mera,",
-  "tu Krishna hogi kisi aur ka,",
-  "per Sudama hoon mein tera",
-  "",
-  "ki bhabjis sesh?",
-  "hurr bal,",
-  "tor bhai ki eto taratari chere debe,",
-  "",
-  "💐 With all due respect, presenting you the queen of the queens 💐",
-  "👑 ASHMITA BANERJEE 👑",
-];
-
+import { firstPart, restOfMessage } from "./data";
+import { getImageUrl } from "../src/utils";
 function BirthdayPage() {
   const [lineIndex, setLineIndex] = useState(0);
   const [showRest, setShowRest] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [isImageDisplayed, setIsImageDisplayed] = useState(true); // Track whether images or messages are displayed
+  const [imageIndex, setImageIndex] = useState(0); // To keep track of the image index
+  const ashmita1 = getImageUrl("hero/ashmita1.png");
+  const ashmita2 = getImageUrl("hero/ashmita2.png");
+  const ashmita3 = getImageUrl("hero/ashmita3.png");
+  const ashmita4 = getImageUrl("hero/ashmita4.png");
+  const ashmita5 = getImageUrl("hero/ashmita5.png");
+  const barso = getImageUrl("hero/barso.mp3");
+  const images = [ashmita1, ashmita2, ashmita3, ashmita4, ashmita5];
+
+  // Change content after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsImageDisplayed(false); // Show birthday message after 5 seconds
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Change the image randomly every 1 second
+  useEffect(() => {
+    if (isImageDisplayed) {
+      const imageTimer = setInterval(() => {
+        setImageIndex(Math.floor(Math.random() * images.length)); // Randomize the image
+      }, 200);
+
+      return () => clearInterval(imageTimer);
+    }
+  }, [isImageDisplayed]);
 
   useEffect(() => {
-    if (lineIndex < firstPart.length) {
+    if (!isImageDisplayed && lineIndex < firstPart.length) {
       const timeout = setTimeout(() => {
         setLineIndex((prev) => prev + 1);
       }, 500);
+
       return () => clearTimeout(timeout);
     }
-  }, [lineIndex]);
+  }, [lineIndex, isImageDisplayed]);
 
   useEffect(() => {
     const stars = document.querySelectorAll(".star");
@@ -72,9 +62,40 @@ function BirthdayPage() {
       window.location.href = "https://ashmitabanerjee.netlify.app/";
     }, 2000);
   };
+  const audioRef = useRef(null);
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    // Try to play on load (likely blocked)
+    if (audio) {
+      audio.play().catch((err) => {
+        console.warn("Autoplay failed. Waiting for user interaction...", err);
+      });
+    }
+
+    const enableAudio = () => {
+      if (audio && audio.paused) {
+        audio.play().catch((err) => {
+          console.error("User interaction play failed:", err);
+        });
+      }
+      document.removeEventListener("click", enableAudio);
+    };
+
+    document.addEventListener("click", enableAudio);
+
+    return () => {
+      document.removeEventListener("click", enableAudio);
+    };
+  }, [imageIndex]);
 
   return (
     <div style={styles.container}>
+      {/* <audio ref={audioRef} loop>
+  <source src={barso} type="audio/mpeg" />
+</audio> */}
+      {/* <button onClick={() => audioRef.current?.play()}>Play Music</button> */}
+
       <div className="stars-container">
         {[...Array(500)].map((_, i) => (
           <div key={i} className="star" />
@@ -82,37 +103,39 @@ function BirthdayPage() {
       </div>
 
       <div className="hearts" />
-      <div style={styles.card}>
-        <h1 style={styles.title}>🎂 Happy Birthday, Bhai! 🎂</h1>
 
-        {firstPart.slice(0, lineIndex).map((line, idx) => (
-          <p key={idx} style={styles.line}>{line}</p>
-        ))}
+      {/* Display random images for the first 5 seconds */}
+      {isImageDisplayed ? (
+        <div style={styles.imageContainer}>
+          <img
+            src={images[imageIndex]}
+            alt="Ashmita"
+            style={styles.randomImage}
+          />
+        </div>
+      ) : (
+        <div style={styles.card}>
+          <h1 style={styles.title}>🎂 Happy Birthday, Bhai! 🎂</h1>
 
-        {lineIndex >= firstPart.length && !showRest && (
-          <button style={styles.readMoreButton} onClick={() => setShowRest(true)}>
-            💌 Read More
-          </button>
-        )}
-
-        {showRest &&
-          restOfMessage.slice(0, -6).map((line, index) => (
-            <p
-              key={index}
-              style={{
-                ...styles.line,
-                marginTop: line === "" ? "50px" : styles.line.margin,
-              }}
-            >
+          {firstPart.slice(0, lineIndex).map((line, idx) => (
+            <p key={idx} style={styles.line}>
               {line}
             </p>
           ))}
 
-        {showRest && (
-          <div style={styles.finalReveal}>
-            {restOfMessage.slice(-6).map((line, idx) => (
+          {lineIndex >= firstPart.length && !showRest && (
+            <button
+              style={styles.readMoreButton}
+              onClick={() => setShowRest(true)}
+            >
+              💌 Read More
+            </button>
+          )}
+
+          {showRest &&
+            restOfMessage.slice(0, -6).map((line, index) => (
               <p
-                key={idx}
+                key={index}
                 style={{
                   ...styles.line,
                   marginTop: line === "" ? "50px" : styles.line.margin,
@@ -122,12 +145,27 @@ function BirthdayPage() {
               </p>
             ))}
 
-            <button style={styles.queenButton} onClick={handleMeetQueen}>
-              Meet the Queen 👑
-            </button>
-          </div>
-        )}
-      </div>
+          {showRest && (
+            <div style={styles.finalReveal}>
+              {restOfMessage.slice(-6).map((line, idx) => (
+                <p
+                  key={idx}
+                  style={{
+                    ...styles.line,
+                    marginTop: line === "" ? "50px" : styles.line.margin,
+                  }}
+                >
+                  {line}
+                </p>
+              ))}
+
+              <button style={styles.queenButton} onClick={handleMeetQueen}>
+                Meet the Queen 👑
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {showPopup && (
         <div style={styles.popupOverlay}>
@@ -162,6 +200,22 @@ const styles = {
     fontFamily: "'Dancing Script', cursive",
     overflow: "hidden",
     position: "relative",
+  },
+  imageContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 2,
+    maxWidth: "800px",
+    width: "100%",
+    height: "80vh",
+    marginBottom: "20px",
+  },
+  randomImage: {
+    maxWidth: "100%",
+    maxHeight: "100%",
+    borderRadius: "20px",
+    objectFit: "cover",
   },
   card: {
     backgroundColor: "rgba(20, 20, 30, 0.9)",
