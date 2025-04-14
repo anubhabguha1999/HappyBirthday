@@ -23,7 +23,7 @@ function BirthdayPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsImageDisplayed(false);
-    }, 3000);
+    }, 4000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -98,7 +98,23 @@ function BirthdayPage() {
     setUseAltTheme(true);
   };
 
-  const theme = useAltTheme ? (scrolled ? scrolledTheme : lightDarkTheme) : (scrolled ? scrolledTheme : darkTheme);
+  const theme = useAltTheme
+    ? scrolled
+      ? scrolledTheme
+      : lightDarkTheme
+    : scrolled
+    ? scrolledTheme
+    : darkTheme;
+  const [showBirthdayPopover, setShowBirthdayPopover] = useState(false);
+  useEffect(() => {
+    if (!isImageDisplayed) {
+      setShowBirthdayPopover(true);
+      const timer = setTimeout(() => {
+        setShowBirthdayPopover(false);
+      }, 2000); // Show for 2 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [isImageDisplayed]);
 
   return (
     <div style={theme.container}>
@@ -112,27 +128,57 @@ function BirthdayPage() {
 
       {isImageDisplayed ? (
         <div style={theme.imageContainer}>
-          <img src={images[imageIndex]} alt="Ashmita" style={theme.randomImage} />
+          <img
+            src={images[imageIndex]}
+            alt="Ashmita"
+            style={theme.randomImage}
+          />
+        </div>
+      ) : showBirthdayPopover ? (
+        <div className="fade-in-greeting" style={theme.card}>
+          <h1 style={theme.title}>🎂 Happy Birthday, Bhai! 🎂</h1>
         </div>
       ) : (
         <div style={theme.card}>
           <h1 style={theme.title}>🎂 Happy Birthday, Bhai! 🎂</h1>
           {firstPart.slice(0, lineIndex).map((line, idx) => (
-            <p key={idx} style={theme.line}>{line}</p>
+            <p key={idx} style={theme.line}>
+              {line}
+            </p>
           ))}
           {lineIndex >= firstPart.length && !showRest && (
-            <button style={theme.readMoreButton} onClick={handleReadMore}>💌 Read More</button>
+            <button style={theme.readMoreButton} onClick={handleReadMore}>
+              💌 Read More
+            </button>
           )}
           {showRest && (
             <>
               {restOfMessage.slice(0, -6).map((line, index) => (
-                <p key={index} style={{ ...theme.line, marginTop: line === "" ? "50px" : theme.line.margin }}>{line}</p>
+                <p
+                  key={index}
+                  style={{
+                    ...theme.line,
+                    marginTop: line === "" ? "50px" : theme.line.margin,
+                  }}
+                >
+                  {line}
+                </p>
               ))}
               <div style={theme.finalReveal}>
                 {restOfMessage.slice(-6).map((line, idx) => (
-                  <p key={idx} style={{ ...theme.line, marginTop: line === "" ? "50px" : theme.line.margin }}>{line}</p>
+                  <p
+                    key={idx}
+                    style={{
+                      ...theme.line,
+                      marginTop: line === "" ? "50px" : theme.line.margin,
+                    }}
+                  >
+                    {line}
+                  </p>
                 ))}
-                <button style={theme.queenButton} onClick={handleMeetQueen}>Meet the Queen 👑</button>
+                <button style={theme.queenButton} onClick={handleMeetQueen}>
+                  Meet the Queen 👑
+                </button>
               </div>
             </>
           )}
@@ -147,7 +193,19 @@ function BirthdayPage() {
         </div>
       )}
 
-      <style>{floatingHeartsCSS}</style>
+      <style>{`
+${floatingHeartsCSS}
+
+.fade-in-greeting {
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 1; }
+}
+`}</style>
     </div>
   );
 }
@@ -171,7 +229,7 @@ const baseStyles = {
     overflow: "hidden",
     position: "relative",
     transition: "background 1s ease-in-out, opacity 1s ease-in-out",
-    },
+  },
   imageContainer: {
     display: "flex",
     justifyContent: "center",
@@ -278,7 +336,6 @@ const scrolledTheme = {
     color: "#d0d8ff",
   },
 };
-
 
 const darkTheme = {
   ...baseStyles,
