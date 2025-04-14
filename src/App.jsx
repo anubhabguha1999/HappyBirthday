@@ -20,7 +20,15 @@ function BirthdayPage() {
   const ashmita6 = getImageUrl("hero/ashmita6.jpg");
   const ashmita7 = getImageUrl("hero/ashmita7.jpg");
   const barso = getImageUrl("hero/barso.mp3");
-  const images = [ashmita1, ashmita2, ashmita3, ashmita4, ashmita5, ashmita6, ashmita7];
+  const images = [
+    ashmita1,
+    ashmita2,
+    ashmita3,
+    ashmita4,
+    ashmita5,
+    ashmita6,
+    ashmita7,
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -120,11 +128,23 @@ function BirthdayPage() {
 
   return (
     <div style={theme.container}>
-      <div className="stars-container">
-        {[...Array(500)].map((_, i) => (
-          <div key={i} className="star" />
+      <div className="confetti">
+        {[...Array(50)].map((_, i) => (
+          <div
+            key={i}
+            className="confetti-piece"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${-Math.random() * 100}px`,
+              animationDuration: `${2 + Math.random() * 3}s`,
+              animationDelay: `${Math.random() * 2}s`,
+              "--hue": Math.random(),
+            }}
+          />
         ))}
       </div>
+
+      <div className="notes" />
 
       <div className="hearts" />
 
@@ -138,18 +158,28 @@ function BirthdayPage() {
         </div>
       ) : showBirthdayPopover ? (
         <div className="fade-in-greeting" style={theme.card}>
-          <h1 style={theme.title}>🎂 Happy Birthday, Bhai! 🎂</h1>
+          <h1 style={theme.title} className="fade-in-greeting sparkle">
+            🎂 Happy Birthday, Bhai! 🎂
+          </h1>
         </div>
       ) : (
         <div style={theme.card}>
-          <h1 style={theme.title}>🎂 Happy Birthday, Bhai! 🎂</h1>
+          <h1 style={theme.title} className="fade-in-greeting sparkle">
+            🎂 Happy Birthday, Bhai! 🎂
+          </h1>
+
           {firstPart.slice(0, lineIndex).map((line, idx) => (
-            <p key={idx} style={theme.line}>
+            <p key={idx} style={theme.line} className="line-slide">
               {line}
             </p>
           ))}
+
           {lineIndex >= firstPart.length && !showRest && (
-            <button style={theme.readMoreButton} onClick={handleReadMore}>
+            <button
+              style={theme.readMoreButton}
+              className="glow-button"
+              onClick={handleReadMore}
+            >
               💌 Read More
             </button>
           )}
@@ -178,7 +208,11 @@ function BirthdayPage() {
                     {line}
                   </p>
                 ))}
-                <button style={theme.queenButton} onClick={handleMeetQueen}>
+                <button
+                  style={theme.queenButton}
+                  className="glow-button"
+                  onClick={handleMeetQueen}
+                >
                   Meet the Queen 👑
                 </button>
               </div>
@@ -318,7 +352,7 @@ const scrolledTheme = {
   ...baseStyles,
   container: {
     ...baseStyles.container,
-    background: "linear-gradient(to top, #000428, #004e92)",
+    background: "linear-gradient(to top, #000428,rgb(0, 46, 86))",
     transition: "background 1s ease-in-out", // Add transition for smooth background change
   },
   card: {
@@ -350,7 +384,7 @@ const darkTheme = {
     backgroundColor: "rgba(20, 20, 30, 0.9)",
   },
   title: {
-    fontSize: "2.5rem",
+    fontSize: "2rem",
     fontWeight: "bold",
     color: "#f48fb1",
     marginBottom: "30px",
@@ -366,11 +400,11 @@ const lightDarkTheme = {
   ...baseStyles,
   container: {
     ...baseStyles.container,
-    background: "linear-gradient(to top, #000428, #004e92)",
+    background: "linear-gradient(to top, #000428,rgb(0, 46, 86))",
   },
   card: {
     ...baseStyles.card,
-    backgroundColor: "rgba(40, 40, 60, 0.9)",
+    backgroundColor: "rgba(20, 20, 43, 0.9)",
   },
   title: {
     fontSize: "2.5rem",
@@ -386,6 +420,90 @@ const lightDarkTheme = {
 };
 
 const floatingHeartsCSS = `
+/* Confetti effect */
+.confetti {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: hsl(calc(360 * var(--hue)), 70%, 60%);
+  animation: confetti-fall linear infinite;
+  opacity: 0.7;
+  border-radius: 50%;
+  transform: rotate(45deg);
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-10%) rotate(0deg); }
+  100% { transform: translateY(100vh) rotate(360deg); }
+}
+
+/* Sparkle around title */
+.sparkle {
+  animation: sparkle 1.5s infinite alternate ease-in-out;
+}
+@keyframes sparkle {
+  0% { text-shadow: 0 0 5px #fff; }
+  100% { text-shadow: 0 0 20px #fff, 0 0 30px #f0f, 0 0 40px #0ff; }
+}
+
+/* Slide in for birthday lines */
+.line-slide {
+  animation: slideIn 0.6s ease-out forwards;
+  transform: translateX(-30px);
+  opacity: 0;
+}
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Glowing button effect */
+.glow-button {
+  animation: glow 2s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px #ff80ab, 0 0 10px #ff4081;
+  }
+  to {
+    box-shadow: 0 0 20px #ff80ab, 0 0 40px #ff4081;
+  }
+}
+
+/* Floating notes */
+@keyframes floatNote {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+.notes::before {
+  content: '🎵';
+  position: absolute;
+  font-size: 2rem;
+  left: 10%;
+  animation: floatNote 10s infinite linear;
+}
+
+.notes::after {
+  content: '🎶';
+  position: absolute;
+  font-size: 2rem;
+  left: 80%;
+  animation: floatNote 8s infinite linear;
+}
+
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); }
