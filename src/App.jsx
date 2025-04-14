@@ -67,6 +67,7 @@ function BirthdayPage() {
     setShowPopup(true);
     setTimeout(() => {
       window.location.href = "https://ashmitabanerjee.netlify.app/";
+      setShowPopup(false);
     }, 2000);
   };
 
