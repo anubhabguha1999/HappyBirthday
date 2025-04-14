@@ -17,8 +17,10 @@ function BirthdayPage() {
   const ashmita3 = getImageUrl("hero/ashmita3.png");
   const ashmita4 = getImageUrl("hero/ashmita4.png");
   const ashmita5 = getImageUrl("hero/ashmita5.png");
+  const ashmita6 = getImageUrl("hero/ashmita6.jpg");
+  const ashmita7 = getImageUrl("hero/ashmita7.jpg");
   const barso = getImageUrl("hero/barso.mp3");
-  const images = [ashmita1, ashmita2, ashmita3, ashmita4, ashmita5];
+  const images = [ashmita1, ashmita2, ashmita3, ashmita4, ashmita5, ashmita6, ashmita7];
 
   useEffect(() => {
     const timer = setTimeout(() => {
