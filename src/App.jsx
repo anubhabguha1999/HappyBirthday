@@ -2,12 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { firstPart, restOfMessage } from "./data";
 import { getImageUrl } from "../src/utils";
+
 function BirthdayPage() {
   const [lineIndex, setLineIndex] = useState(0);
   const [showRest, setShowRest] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [isImageDisplayed, setIsImageDisplayed] = useState(true); // Track whether images or messages are displayed
-  const [imageIndex, setImageIndex] = useState(0); // To keep track of the image index
+  const [isImageDisplayed, setIsImageDisplayed] = useState(true);
+  const [imageIndex, setImageIndex] = useState(0);
+  const [useAltTheme, setUseAltTheme] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
   const ashmita1 = getImageUrl("hero/ashmita1.png");
   const ashmita2 = getImageUrl("hero/ashmita2.png");
   const ashmita3 = getImageUrl("hero/ashmita3.png");
@@ -16,22 +20,18 @@ function BirthdayPage() {
   const barso = getImageUrl("hero/barso.mp3");
   const images = [ashmita1, ashmita2, ashmita3, ashmita4, ashmita5];
 
-  // Change content after 5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsImageDisplayed(false); // Show birthday message after 5 seconds
+      setIsImageDisplayed(false);
     }, 3000);
-
     return () => clearTimeout(timer);
   }, []);
 
-  // Change the image randomly every 1 second
   useEffect(() => {
     if (isImageDisplayed) {
       const imageTimer = setInterval(() => {
-        setImageIndex(Math.floor(Math.random() * images.length)); // Randomize the image
+        setImageIndex(Math.floor(Math.random() * images.length));
       }, 200);
-
       return () => clearInterval(imageTimer);
     }
   }, [isImageDisplayed]);
@@ -41,7 +41,6 @@ function BirthdayPage() {
       const timeout = setTimeout(() => {
         setLineIndex((prev) => prev + 1);
       }, 500);
-
       return () => clearTimeout(timeout);
     }
   }, [lineIndex, isImageDisplayed]);
@@ -56,23 +55,29 @@ function BirthdayPage() {
     });
   }, []);
 
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 200);
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const handleMeetQueen = () => {
     setShowPopup(true);
     setTimeout(() => {
       window.location.href = "https://ashmitabanerjee.netlify.app/";
     }, 2000);
   };
+
   const audioRef = useRef(null);
   useEffect(() => {
     const audio = audioRef.current;
-
-    // Try to play on load (likely blocked)
     if (audio) {
       audio.play().catch((err) => {
         console.warn("Autoplay failed. Waiting for user interaction...", err);
       });
     }
-
     const enableAudio = () => {
       if (audio && audio.paused) {
         audio.play().catch((err) => {
@@ -81,21 +86,21 @@ function BirthdayPage() {
       }
       document.removeEventListener("click", enableAudio);
     };
-
     document.addEventListener("click", enableAudio);
-
     return () => {
       document.removeEventListener("click", enableAudio);
     };
   }, [imageIndex]);
 
-  return (
-    <div style={styles.container}>
-      {/* <audio ref={audioRef} loop>
-  <source src={barso} type="audio/mpeg" />
-</audio> */}
-      {/* <button onClick={() => audioRef.current?.play()}>Play Music</button> */}
+  const handleReadMore = () => {
+    setShowRest(true);
+    setUseAltTheme(true);
+  };
 
+  const theme = useAltTheme ? (scrolled ? scrolledTheme : lightDarkTheme) : (scrolled ? scrolledTheme : darkTheme);
+
+  return (
+    <div style={theme.container}>
       <div className="stars-container">
         {[...Array(500)].map((_, i) => (
           <div key={i} className="star" />
@@ -104,73 +109,39 @@ function BirthdayPage() {
 
       <div className="hearts" />
 
-      {/* Display random images for the first 5 seconds */}
       {isImageDisplayed ? (
-        <div style={styles.imageContainer}>
-          <img
-            src={images[imageIndex]}
-            alt="Ashmita"
-            style={styles.randomImage}
-          />
+        <div style={theme.imageContainer}>
+          <img src={images[imageIndex]} alt="Ashmita" style={theme.randomImage} />
         </div>
       ) : (
-        <div style={styles.card}>
-          <h1 style={styles.title}>🎂 Happy Birthday, Bhai! 🎂</h1>
-
+        <div style={theme.card}>
+          <h1 style={theme.title}>🎂 Happy Birthday, Bhai! 🎂</h1>
           {firstPart.slice(0, lineIndex).map((line, idx) => (
-            <p key={idx} style={styles.line}>
-              {line}
-            </p>
+            <p key={idx} style={theme.line}>{line}</p>
           ))}
-
           {lineIndex >= firstPart.length && !showRest && (
-            <button
-              style={styles.readMoreButton}
-              onClick={() => setShowRest(true)}
-            >
-              💌 Read More
-            </button>
+            <button style={theme.readMoreButton} onClick={handleReadMore}>💌 Read More</button>
           )}
-
-          {showRest &&
-            restOfMessage.slice(0, -6).map((line, index) => (
-              <p
-                key={index}
-                style={{
-                  ...styles.line,
-                  marginTop: line === "" ? "50px" : styles.line.margin,
-                }}
-              >
-                {line}
-              </p>
-            ))}
-
           {showRest && (
-            <div style={styles.finalReveal}>
-              {restOfMessage.slice(-6).map((line, idx) => (
-                <p
-                  key={idx}
-                  style={{
-                    ...styles.line,
-                    marginTop: line === "" ? "50px" : styles.line.margin,
-                  }}
-                >
-                  {line}
-                </p>
+            <>
+              {restOfMessage.slice(0, -6).map((line, index) => (
+                <p key={index} style={{ ...theme.line, marginTop: line === "" ? "50px" : theme.line.margin }}>{line}</p>
               ))}
-
-              <button style={styles.queenButton} onClick={handleMeetQueen}>
-                Meet the Queen 👑
-              </button>
-            </div>
+              <div style={theme.finalReveal}>
+                {restOfMessage.slice(-6).map((line, idx) => (
+                  <p key={idx} style={{ ...theme.line, marginTop: line === "" ? "50px" : theme.line.margin }}>{line}</p>
+                ))}
+                <button style={theme.queenButton} onClick={handleMeetQueen}>Meet the Queen 👑</button>
+              </div>
+            </>
           )}
         </div>
       )}
 
       {showPopup && (
-        <div style={styles.popupOverlay}>
-          <div style={styles.popupBox}>
-            <h2 style={styles.popupText}>SMILE PLEASE! 😊</h2>
+        <div style={theme.popupOverlay}>
+          <div style={theme.popupBox}>
+            <h2 style={theme.popupText}>SMILE PLEASE! 😊</h2>
           </div>
         </div>
       )}
@@ -188,10 +159,8 @@ export default function App() {
   );
 }
 
-// 🎨 Styles
-const styles = {
+const baseStyles = {
   container: {
-    background: "linear-gradient(to bottom right, #0f0c29, #302b63, #24243e)",
     minHeight: "100vh",
     display: "flex",
     justifyContent: "center",
@@ -200,7 +169,8 @@ const styles = {
     fontFamily: "'Dancing Script', cursive",
     overflow: "hidden",
     position: "relative",
-  },
+    transition: "background 1s ease-in-out, opacity 1s ease-in-out",
+    },
   imageContainer: {
     display: "flex",
     justifyContent: "center",
@@ -218,7 +188,6 @@ const styles = {
     objectFit: "cover",
   },
   card: {
-    backgroundColor: "rgba(20, 20, 30, 0.9)",
     padding: "50px",
     borderRadius: "30px",
     maxWidth: "800px",
@@ -227,17 +196,9 @@ const styles = {
     textAlign: "center",
     zIndex: 2,
   },
-  title: {
-    fontSize: "2.5rem",
-    fontWeight: "bold",
-    color: "#f48fb1",
-    marginBottom: "30px",
-    textShadow: "2px 2px 10px #ff4081",
-  },
   line: {
     fontSize: "1.5rem",
     margin: "16px 0",
-    color: "#e0e0e0",
     transition: "all 0.3s ease-in-out",
   },
   readMoreButton: {
@@ -292,6 +253,78 @@ const styles = {
   },
 };
 
+const scrolledTheme = {
+  ...baseStyles,
+  container: {
+    ...baseStyles.container,
+    background: "linear-gradient(to top, #000428, #004e92)",
+    transition: "background 1s ease-in-out", // Add transition for smooth background change
+  },
+  card: {
+    ...baseStyles.card,
+    backgroundColor: "rgba(10, 10, 20, 0.95)",
+    transition: "background-color 1s ease-in-out", // Smooth transition for card background color
+  },
+  title: {
+    fontSize: "2.5rem",
+    fontWeight: "bold",
+    color: "#a0c4ff",
+    marginBottom: "30px",
+    textShadow: "2px 2px 10px #0077b6",
+  },
+  line: {
+    ...baseStyles.line,
+    color: "#d0d8ff",
+  },
+};
+
+
+const darkTheme = {
+  ...baseStyles,
+  container: {
+    ...baseStyles.container,
+    background: "linear-gradient(to bottom right, #0f0c29, #302b63, #24243e)",
+  },
+  card: {
+    ...baseStyles.card,
+    backgroundColor: "rgba(20, 20, 30, 0.9)",
+  },
+  title: {
+    fontSize: "2.5rem",
+    fontWeight: "bold",
+    color: "#f48fb1",
+    marginBottom: "30px",
+    textShadow: "2px 2px 10px #ff4081",
+  },
+  line: {
+    ...baseStyles.line,
+    color: "#e0e0e0",
+  },
+};
+
+const lightDarkTheme = {
+  ...baseStyles,
+  container: {
+    ...baseStyles.container,
+    background: "linear-gradient(to top, #000428, #004e92)",
+  },
+  card: {
+    ...baseStyles.card,
+    backgroundColor: "rgba(40, 40, 60, 0.9)",
+  },
+  title: {
+    fontSize: "2.5rem",
+    fontWeight: "bold",
+    color: "#b39ddb",
+    marginBottom: "30px",
+    textShadow: "2px 2px 10px #9575cd",
+  },
+  line: {
+    ...baseStyles.line,
+    color: "#dcdce4",
+  },
+};
+
 const floatingHeartsCSS = `
 @keyframes pulse {
   0% { transform: scale(1); }
@@ -311,13 +344,8 @@ const floatingHeartsCSS = `
 }
 
 @keyframes float {
-  0% {
-    transform: translateX(0) translateY(0);
-  }
-  100% {
-    transform: translateX(-50vw) translateY(100vh);
-    opacity: 0;
-  }
+  0% { transform: translateX(0) translateY(0); }
+  100% { transform: translateX(-50vw) translateY(100vh); opacity: 0; }
 }
 
 .stars-container {
@@ -345,9 +373,7 @@ const floatingHeartsCSS = `
     transform: translateX(100vw) translateY(-100px) rotate(250deg);
     opacity: 0;
   }
-  10% {
-    opacity: 1;
-  }
+  10% { opacity: 1; }
   100% {
     transform: translateX(-100vw) translateY(100vh) rotate(250deg);
     opacity: 0;
